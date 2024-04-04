@@ -1,1 +1,35 @@
-<h1>Hello github!!</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://cdn.jsdelivr.net/npm/umbrellajs"></script>
+  <title>stop_watch_riot</title>
+</head>
+<body>
+  <!-- カスタムタグの表示位置-->
+  <stop_watch />
+
+  <!-- <log_list/> は外部ファイルで指定 -->
+  <script src="./stop_watch.riot" type="riot"></script>
+  
+  <!-- cdnで riot.js とコンパイラ -->
+  <script src="https://unpkg.com/riot@9/riot+compiler.min.js"></script>
+  
+  <!-- コンパイルとマウント、import -->
+  <script type="module">
+
+    (async function main() {
+      await riot.compile();
+
+      riot.mount('stop_watch', {
+          title: 'stop_watch ',
+          ver: ` @ riot.js ${riot.version}`, // バージョン取得
+      })
+    }())
+  
+  </script>
+
+</body>
+</html>
