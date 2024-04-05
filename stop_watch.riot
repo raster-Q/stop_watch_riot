@@ -1,4 +1,84 @@
 <stop_watch>
-    <h1>{ props.title } <span>{ props.ver }</span></h1>
-    <div id="divBox"></div>
+    <div id="main">
+        <h1>{ props.title } </h1>
+        <div id="display" class="width_85">{ state.time }</div>
+        <div class="container width_85">
+            <button id="start" onclick="{start}">start</button>
+            <div>{ state.count }</div>
+            <button id="stop" onclick="{stop}">stop</button>
+        </div>
+        <hr>
+
+        <div id="log_area">
+            <div id="logs" each="item in state.logs">
+                { item }
+            </div>
+        </div>
+
+        <hr>
+        <p>{ props.ver }</p>
+    </div>
+
+    <script>
+        export default {
+
+            onBeforeMount () {
+                this.state = {
+                    count: 0,
+                    time: '00:00:00',
+                    logs: [],
+                };        
+            },
+
+            onMounted () {
+                this.$("#stop").disabled = true;
+            },
+
+            onUnmounted () {
+                clearInterval(this.timerId);
+            },
+
+            start () {
+                this.$("#start").disabled = true;
+                this.reset();
+                this.timerId = setInterval(() => {
+                    this.state.count += 1;
+                    const hour = this.digits(Math.floor(this.state.count / 3600));
+                    const minute = this.digits((Math.floor(this.state.count / 60)) % 60);
+                    const second = this.digits(this.state.count % 60);
+                    this.update({
+                        time: `${hour}:${minute}:${second}`,
+                        count: this.state.count,
+                    });
+                }, 1000);
+                this.$("#stop").disabled = false;
+            },
+
+            stop () {
+                this.$("#stop").disabled = true;
+                clearInterval(this.timerId);
+                this.state.logs
+                    .unshift(`${this.state.logs.length + 1}_ ${this.state.time}`);
+
+                this.update({
+                    logs: this.state.logs,
+                });
+
+                this.$("#start").disabled = false;
+            },
+
+            digits (d) {
+                return String(d).padStart(2, '0');
+            },
+
+            reset() {
+                clearInterval(this.timerId);
+                this.update ({
+                    time: '00:00:00',
+                    count: 0,
+                });
+            },
+
+        }
+    </script>
 </stop_watch>
