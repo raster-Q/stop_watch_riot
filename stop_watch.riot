@@ -42,15 +42,24 @@
                 this.$("#start").disabled = true;
                 this.reset();
                 this.timerId = setInterval(() => {
-                    this.state.count += 1;
-                    const hour = this.digits(Math.floor(this.state.count / 3600));
-                    const minute = this.digits((Math.floor(this.state.count / 60)) % 60);
-                    const second = this.digits(this.state.count % 60);
+                    const count = ++this.state.count;
+                    const times = {
+                        hour: Math.floor(count / 3600),
+                        minute: (Math.floor(count / 60)) % 60,
+                        second: count % 60,
+                    };
+
+                    for(let key in times ) {
+                        times[key] = times[key].toString().padStart(2, 0);
+                    };
+
                     this.update({
-                        time: `${hour}:${minute}:${second}`,
-                        count: this.state.count,
+                        time: `${times.hour}:${times.minute}:${times.second}`,
+                        count: count,
                     });
+
                 }, 1000);
+
                 this.$("#stop").disabled = false;
             },
 
@@ -63,12 +72,8 @@
                 this.update({
                     logs: this.state.logs,
                 });
-
+                
                 this.$("#start").disabled = false;
-            },
-
-            digits (d) {
-                return String(d).padStart(2, '0');
             },
 
             reset() {
